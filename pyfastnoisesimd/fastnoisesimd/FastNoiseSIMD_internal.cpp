@@ -139,6 +139,7 @@ typedef SIMDi MASK;
 
 
 static SIMDi SIMDi_NUM(0xffffffff);
+static SIMDi SIMDi_NUM(1);
 static SIMDf SIMDf_NUM(1);
 
 // SIMD functions
@@ -176,10 +177,10 @@ static SIMDf VECTORCALL FUNC(DIV)(SIMDf a, SIMDf b)
 #define SIMDf_MAX(a,b) vmaxq_f32(a,b)
 #define SIMDf_INV_SQRT(a) vrsqrteq_f32(a)
 
-#define SIMDf_LESS_THAN(a,b) vreinterpretq_f32_u32(vcltq_f32(a,b))
-#define SIMDf_GREATER_THAN(a,b) vreinterpretq_f32_u32(vcgtq_f32(a,b))
-#define SIMDf_LESS_EQUAL(a,b) vreinterpretq_f32_u32(vcleq_f32(a,b))
-#define SIMDf_GREATER_EQUAL(a,b) vreinterpretq_f32_u32(vcgeq_f32(a,b))
+#define SIMDf_LESS_THAN(a,b) vcltq_f32(a,b)
+#define SIMDf_GREATER_THAN(a,b) vcgtq_f32(a,b)
+#define SIMDf_LESS_EQUAL(a,b) vcleq_f32(a,b)
+#define SIMDf_GREATER_EQUAL(a,b) (vcgeq_f32(a,b)
 
 #define SIMDf_AND(a,b) SIMDf_CAST_TO_FLOAT(vandq_s32(vreinterpretq_s32_f32(a),vreinterpretq_s32_f32(b)))
 #define SIMDf_AND_NOT(a,b) SIMDf_CAST_TO_FLOAT(vandq_s32(vmvnq_s32(vreinterpretq_s32_f32(a)),vreinterpretq_s32_f32(b)))
@@ -190,7 +191,7 @@ static SIMDf VECTORCALL FUNC(FLOOR)(SIMDf a)
 {
 	SIMDf fval = SIMDf_CONVERT_TO_FLOAT(SIMDi_CONVERT_TO_INT(a));
 
-	return vsubq_f32(fval, SIMDf_AND(SIMDf_LESS_THAN(a, fval), SIMDf_NUM(1)));
+	return vsubq_f32(fval, SIMDf_CAST_TO_FLOAT(vandq_s32(SIMDf_LESS_THAN(a, fval), SIMDi_NUM(1))));
 }
 #define SIMDf_FLOOR(a) FUNC(FLOOR)(a)
 #else
@@ -590,7 +591,6 @@ static SIMDi SIMDi_NUM(13);
 #endif
 
 static SIMDi SIMDi_NUM(incremental);
-static SIMDi SIMDi_NUM(1);
 static SIMDi SIMDi_NUM(2);
 static SIMDi SIMDi_NUM(255);
 static SIMDi SIMDi_NUM(60493);
