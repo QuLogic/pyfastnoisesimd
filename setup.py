@@ -110,6 +110,8 @@ if os.name == 'nt':
     fma_flags = None
 else:  # Linux
     extra_cflags = ['-std=c++11']
+    if platform.machine() in ('armv7l', 'aarch64'):
+        extra_cflags += ['-flax-vector-conversions']
     avx512 = {
         'sources': [
             'pyfastnoisesimd/fastnoisesimd/FastNoiseSIMD_avx512.cpp'
